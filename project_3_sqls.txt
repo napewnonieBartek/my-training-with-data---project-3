@@ -1,0 +1,8 @@
+# after initial cleaning in Excel, left join countries table and iq table
+
+SELECT
+	c.country, c.region, c.population, c.net_migration, c.gdp, c.literacy_percentage, c.climate, c.agriculture, c.industry, 	c.service,
+	i.ranking, i.country, i.average_iq
+FROM
+	countries_of_the_world AS c
+LEFT JOIN iq AS i ON c.country = i.country
