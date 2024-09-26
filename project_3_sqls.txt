@@ -1,4 +1,4 @@
-# after initial cleaning in Excel, left join countries table and iq table
+#after initial cleaning in Excel, left join countries table and iq table
 
 SELECT
 	c.country, c.region, c.population, c.net_migration, c.gdp, c.literacy_percentage, c.climate, c.agriculture, c.industry, 	c.service,
@@ -6,3 +6,82 @@ SELECT
 FROM
 	countries_of_the_world AS c
 LEFT JOIN iq AS i ON c.country = i.country
+
+
+
+#saving query result as a new table in my project
+
+CREATE TABLE countries_data AS 
+(
+SELECT
+    c.country,
+    c.region, 
+    c.population, 
+    c.net_migration, 
+    c.gdp, 
+    c.literacy_percentage, 
+    c.climate,  
+    c.agriculture, 
+    c.industry, 
+    c.service,
+    i.ranking, 
+    i.average_iq
+FROM
+    countries_of_the_world AS c
+LEFT JOIN iq AS i 
+    ON c.country = i.country
+)
+
+
+
+#cleaning data from null values for average_iq data ​​so that they do not disturb further analyses
+
+DELETE
+FROM countries_data
+WHERE
+	average_iq IS NULL
+
+
+
+# checking top 10 highest average_iq countries
+
+SELECT
+	country,
+	average_iq
+FROM countries_data
+ORDER BY average_iq DESC
+LIMIT 10
+
+
+
+#checking average iq for regions
+
+SELECT
+	region,
+	ROUND(AVG(average_iq), 2) AS avg_iq
+FROM countries_data
+GROUP BY region
+ORDER BY avg_iq DESC;
+
+
+
+#checking average iq for different climate ranks (1 is the worst, 4 is the best climate for living)
+
+SELECT
+	climate,
+	ROUND(AVG(average_iq), 2) AS avg_iq
+FROM countries_data
+WHERE climate IS NOT NULL
+GROUP BY climate
+ORDER BY avg_iq DESC;
+
+
+
+#checking correlation for GDP and average_iq based on default sql function CORR
+
+SELECT
+    CORR(gdp, average_iq) AS correlation
+FROM
+    countries_data;
+
+
